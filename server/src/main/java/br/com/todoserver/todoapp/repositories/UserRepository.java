@@ -1,6 +1,7 @@
 package br.com.todoserver.todoapp.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     public UserEntity searchByUsername(String username);
 
     public UserEntity findByUsernameAndPassword(String username, String password);
+
+    public Optional<UserEntity> findByUsernameIgnoreCase(String username);
 
     public UserEntity findByEmailIgnoreCase(String email);
 

@@ -11,19 +11,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "user", uniqueConstraints = {
+@Table(name = "\"user\"", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "use_username" }, name = "user_use_username_ukey"),
         @UniqueConstraint(columnNames = { "use_email" }, name = "user_use_email_ukey")
 })
@@ -34,19 +32,19 @@ public class UserEntity {
     @Column(name = "use_cod")
     private Long id;
     
-    @NotEmpty(message = "Username can't be null or empty")
+    @NotBlank(message = "User username can't be empty")
     @Column(name = "use_username")
     private String username;
     
-    @NotEmpty(message = "Email can't be null or empty")
+    @NotBlank(message = "User email can't be empty")
     @Email(message = "Email must to be valid")
     @Column(name = "use_email")
     private String email;
     
-    @NotEmpty(message = "Password can't be null or empty")
+    @NotBlank(message = "User password can't be empty")
     @Column(name = "use_password")
     private String password;
 
     @OneToMany(mappedBy = "user")
-    private List<TaskEntity> tasks;
+    private List<ProjectEntity> projects;
 }
