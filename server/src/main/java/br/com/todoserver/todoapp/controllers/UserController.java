@@ -27,7 +27,7 @@ import br.com.todoserver.todoapp.services.UserService;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired

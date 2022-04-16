@@ -28,7 +28,7 @@ public class UserService {
 
     public UserProjection.NoPassword createUser(UserEntity user) {
         if (userRepository.findByEmailIgnoreCaseOrUsernameIgnoreCase(user.getEmail(),
-                user.getUsername()) != null)
+                user.getUsername()).isPresent())
             throw new ResourceAlreadyExistsException("This email or username already exists");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
