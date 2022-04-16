@@ -27,7 +27,8 @@ public class UserService {
     UserMapper userMapper;
 
     public UserProjection.NoPassword createUser(UserEntity user) {
-        if (userRepository.findByEmailContainsIgnoreCaseOrUsernameIgnoreCase(user.getEmail(), user.getUsername()) != null)
+        if (userRepository.findByEmailIgnoreCaseOrUsernameIgnoreCase(user.getEmail(),
+                user.getUsername()) != null)
             throw new ResourceAlreadyExistsException("This email or username already exists");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -45,5 +46,21 @@ public class UserService {
         userMapper.updateUserFromDto(newUser, user);
         userRepository.save(user);
         return ProjectionMapper.convertObject(UserProjection.NoPassword.class, user);
+    }
+
+    public UserProjection.WithProjects getUser(Long id) {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty())
+            throw new ResourceNotFoundException(String.format("User [%d] not found", id));
+
+        return ProjectionMapper.convertObject(UserProjection.WithProjects.class, optionalUser.get());
+    }
+
+    public void deleteUser(Long id) {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty())
+            throw new ResourceNotFoundException(String.format("User [%d] not found", id));
+
+        userRepository.delete(optionalUser.get());
     }
 }

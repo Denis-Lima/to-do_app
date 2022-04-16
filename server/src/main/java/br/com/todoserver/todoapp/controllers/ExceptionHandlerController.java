@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import br.com.todoserver.todoapp.exceptions.ResourceAlreadyExistsException;
 import br.com.todoserver.todoapp.exceptions.TokenNotFoundException;
+import br.com.todoserver.todoapp.exceptions.UnauthorizedPermissionException;
 import br.com.todoserver.todoapp.responses.ErrorResponse;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -36,7 +37,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
             HttpHeaders headers, HttpStatus status, WebRequest request) {
         StringBuilder stringBuilder = new StringBuilder();
         for (ObjectError error : ex.getBindingResult().getAllErrors()) {
-            stringBuilder.append(error.getDefaultMessage() + "\n");
+            stringBuilder.append(error.getDefaultMessage() + ", ");
         }
         ;
         ErrorResponse error = new ErrorResponse(stringBuilder.substring(0, stringBuilder.length() - 1).toString());
@@ -55,5 +56,9 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
     }
 
-    
+    @ExceptionHandler(UnauthorizedPermissionException.class)
+    protected ResponseEntity<Object> handleUnauthorizedPermissionException(UnauthorizedPermissionException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(ex.getLocalizedMessage());
+        return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+    }    
 }

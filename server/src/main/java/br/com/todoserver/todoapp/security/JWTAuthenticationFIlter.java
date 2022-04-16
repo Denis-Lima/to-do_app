@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,7 +29,7 @@ public class JWTAuthenticationFIlter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = this.getTokenFromCookies(request);
+        String token = jwtService.getTokenFromCookies(request.getCookies());
         if (token != null && jwtService.isValid(token)) {
             this.authenticate(token);
         }
@@ -49,18 +48,5 @@ public class JWTAuthenticationFIlter extends OncePerRequestFilter {
                     new ArrayList<>());
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
-    }
-
-    private String getTokenFromCookies(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(jwtService.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-
-        return null;
     }
 }

@@ -2,6 +2,8 @@ package br.com.todoserver.todoapp.services;
 
 import java.util.Date;
 
+import javax.servlet.http.Cookie;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -51,5 +53,24 @@ public class JWTService {
     public Integer getExpFromToken(String token) {
         Claims body = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
         return (Integer) (int) body.getExpiration().getTime();
+    }
+
+    public boolean isSamePerson(Long id, Cookie[] cookies) {
+        String token = this.getTokenFromCookies(cookies);
+        if (token != null)
+            return this.getIdFromToken(token).equals(id);
+        return false;
+    }
+
+    public String getTokenFromCookies(Cookie[] cookies) {
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(this.name)) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 }
