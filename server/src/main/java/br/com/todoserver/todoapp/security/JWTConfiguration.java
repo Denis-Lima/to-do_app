@@ -3,6 +3,7 @@ package br.com.todoserver.todoapp.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -40,15 +42,23 @@ public class JWTConfiguration extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(authenticationService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().cors().and().authorizeRequests()
                 .mvcMatchers("/auth").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/users").permitAll()
                 .anyRequest().authenticated().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().logout().deleteCookies(
-                        jwtService.getName()).logoutRequestMatcher(new AntPathRequestMatcher("/auth", "GET"))
+                        jwtService.getName())
+                .logoutRequestMatcher(new AntPathRequestMatcher("/auth", "GET"))
                 .logoutSuccessHandler((request, response, authentication) -> response.setStatus(200))
+                .and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
                 .and().addFilterBefore(new JWTAuthenticationFIlter(
                         jwtService, userRepository), UsernamePasswordAuthenticationFilter.class);
     }
