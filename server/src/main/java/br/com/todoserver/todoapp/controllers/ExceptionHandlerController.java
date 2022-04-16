@@ -3,6 +3,7 @@ package br.com.todoserver.todoapp.controllers;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,9 +12,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.com.todoserver.todoapp.exceptions.ResourceAlreadyExistsException;
+import br.com.todoserver.todoapp.exceptions.TokenNotFoundException;
 import br.com.todoserver.todoapp.responses.ErrorResponse;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 @ControllerAdvice
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
@@ -35,8 +37,23 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         StringBuilder stringBuilder = new StringBuilder();
         for (ObjectError error : ex.getBindingResult().getAllErrors()) {
             stringBuilder.append(error.getDefaultMessage() + "\n");
-        };
+        }
+        ;
         ErrorResponse error = new ErrorResponse(stringBuilder.substring(0, stringBuilder.length() - 1).toString());
         return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(TokenNotFoundException.class)
+    protected ResponseEntity<Object> handleTokenNotFoundException(TokenNotFoundException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(ex.getLocalizedMessage());
+        return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    protected ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(ex.getLocalizedMessage());
+        return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    
 }
