@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +37,7 @@ public class ProjectEntity {
     private String name;
     
     @Column(name = "pro_created_at", nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
     
     @ManyToOne

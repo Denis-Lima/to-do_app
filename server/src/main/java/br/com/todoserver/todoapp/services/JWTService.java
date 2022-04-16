@@ -3,6 +3,7 @@ package br.com.todoserver.todoapp.services;
 import java.util.Date;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -72,5 +73,9 @@ public class JWTService {
         }
 
         return null;
+    }
+
+    public String getTokenFromRequest(HttpServletRequest request) {
+        return getTokenFromCookies(request.getCookies());
     }
 }
