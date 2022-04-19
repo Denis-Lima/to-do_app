@@ -42,27 +42,27 @@ public class UserController {
                 HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<SuccessResponse> update(@Valid @RequestBody UserDto user, @PathVariable("id") Long id,
+    @PutMapping("/{userId}")
+    public ResponseEntity<SuccessResponse> update(@Valid @RequestBody UserDto user, @PathVariable("userId") Long userId,
             HttpServletRequest request) {
-        if (!jwtService.isSamePerson(id, request.getCookies()))
+        if (!jwtService.isSamePerson(userId, request.getCookies()))
             throw new UnauthorizedPermissionException("The authenticated user and the id isn't the same");
         return new ResponseEntity<SuccessResponse>(new SuccessResponse(userService.updateUser(
-                id, user)), HttpStatus.OK);
+                userId, user)), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SuccessResponse> get(@PathVariable("id") Long id, HttpServletRequest request) {
-        if (!jwtService.isSamePerson(id, request.getCookies()))
+    @GetMapping("/{userId}")
+    public ResponseEntity<SuccessResponse> get(@PathVariable("userId") Long userId, HttpServletRequest request) {
+        if (!jwtService.isSamePerson(userId, request.getCookies()))
             throw new UnauthorizedPermissionException("The authenticated user and the id isn't the same");
-        return new ResponseEntity<SuccessResponse>(new SuccessResponse(userService.getUser(id)), HttpStatus.OK);
+        return new ResponseEntity<SuccessResponse>(new SuccessResponse(userService.getUser(userId)), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id, HttpServletRequest request, HttpServletResponse response) {
-        if (!jwtService.isSamePerson(id, request.getCookies()))
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable("userId") Long userId, HttpServletRequest request, HttpServletResponse response) {
+        if (!jwtService.isSamePerson(userId, request.getCookies()))
             throw new UnauthorizedPermissionException("The authenticated user and the id isn't the same");
-        userService.deleteUser(id);
+        userService.deleteUser(userId);
         response.setStatus(200);
         response.addCookie(new Cookie(jwtService.getName(), null));
     }

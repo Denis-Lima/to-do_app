@@ -12,6 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.com.todoserver.todoapp.exceptions.ResourceAlreadyExistsException;
+import br.com.todoserver.todoapp.exceptions.ResourceNotFoundException;
 import br.com.todoserver.todoapp.exceptions.TokenNotFoundException;
 import br.com.todoserver.todoapp.exceptions.UnauthorizedPermissionException;
 import br.com.todoserver.todoapp.responses.ErrorResponse;
@@ -30,6 +31,13 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
             ResourceAlreadyExistsException exception, WebRequest request) {
         ErrorResponse error = new ErrorResponse(exception.getLocalizedMessage());
         return new ResponseEntity(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public final ResponseEntity<Object> handleResourceNotFoundException(
+            ResourceNotFoundException exception, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(exception.getLocalizedMessage());
+        return new ResponseEntity(error, HttpStatus.NOT_FOUND);
     }
 
     @Override

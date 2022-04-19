@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -51,5 +53,6 @@ public class TaskEntity {
 
     @ManyToOne
     @JoinColumn(name = "tas_project_cod", nullable = false)
+    @JsonBackReference
     private ProjectEntity project;
 }

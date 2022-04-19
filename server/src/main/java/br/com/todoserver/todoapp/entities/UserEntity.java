@@ -14,6 +14,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -50,6 +52,7 @@ public class UserEntity implements UserDetails {
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<ProjectEntity> projects;
 
     @Override
