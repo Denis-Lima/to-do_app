@@ -1,12 +1,9 @@
 package br.com.todoserver.todoapp.dtos;
 
-import lombok.Setter;
+import lombok.Data;
 
-import lombok.Getter;
-
-@Getter
-@Setter
-public class UserDto {
+@Data
+public class UserDTO {
     private Long id;
     private String username;
     private String email;

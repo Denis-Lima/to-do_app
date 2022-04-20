@@ -34,6 +34,21 @@ begin
 	    constraint task_tas_project_cod_ukey foreign key (tas_project_cod) references project(pro_cod)
 	);
 
+	drop trigger if exists on_update_task_updated_at on task;
+
+	create or replace function update_updated_at() returns trigger as
+	$$
+	begin
+		new.tas_updated_at := now();
+		return new;
+	end;
+	$$ language plpgsql;
+
+	create trigger on_update_task_updated_at
+		before update on task
+		for each row
+		execute procedure update_updated_at();
+
 	if exists (select * from pg_catalog.pg_roles where rolname = 'todo_user') then
 		reassign owned by todo_user to postgres;
 		drop owned by todo_user;

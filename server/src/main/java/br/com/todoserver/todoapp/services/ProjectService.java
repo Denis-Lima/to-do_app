@@ -41,9 +41,6 @@ public class ProjectService {
 
     public List<ProjectProjection.WithoutUser> getProjects(Long userId) {
         List<ProjectEntity> projects = projectRepository.findByUser_Id(userId);
-        //System.out.println(projects);
-        if (projects == null)
-            throw new ResourceNotFoundException(String.format("Projects of user [%d] not found", userId));
         return ProjectionMapper.convertObjectList(ProjectProjection.WithoutUser.class, projects);
     }
 

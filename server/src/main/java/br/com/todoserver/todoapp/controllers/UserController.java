@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.todoserver.todoapp.dtos.UserDto;
+import br.com.todoserver.todoapp.dtos.UserDTO;
 import br.com.todoserver.todoapp.entities.UserEntity;
 import br.com.todoserver.todoapp.exceptions.UnauthorizedPermissionException;
 import br.com.todoserver.todoapp.responses.SuccessResponse;
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<SuccessResponse> update(@Valid @RequestBody UserDto user, @PathVariable("userId") Long userId,
+    public ResponseEntity<SuccessResponse> update(@Valid @RequestBody UserDTO user, @PathVariable("userId") Long userId,
             HttpServletRequest request) {
         if (!jwtService.isSamePerson(userId, request.getCookies()))
             throw new UnauthorizedPermissionException("The authenticated user and the id isn't the same");
