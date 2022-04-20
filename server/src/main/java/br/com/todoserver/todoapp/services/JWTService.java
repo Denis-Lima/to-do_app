@@ -28,6 +28,10 @@ public class JWTService {
         return this.name;
     }
 
+    public String getExpiration() {
+        return this.expiration;
+    }
+
     public String generateToken(Authentication authentication) {
         UserEntity user = (UserEntity) authentication.getPrincipal();
         Date now = new Date();
